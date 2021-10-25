@@ -1,4 +1,4 @@
-const ApiKey = "use your own key";
+const ApiKey = "bbbc3a03104f41c08a136a9193a5a417";
 const baseUrl = "https://api.football-data.org/v2/";
 const leagueId = "2021";
 const baseEndPoin = `${baseUrl}competitions/${leagueId}`;
@@ -29,14 +29,44 @@ function getListTeams() {
                     <p>Berdiri: ${team.founded} <br>
                        Markas: ${team.venue}
                     </p>
-                    <a href="#!" class="secondary-content"><i class="material-icons">info</i></a>
+                    <a href="#" data-id="${team.id}" class="secondary-content"><i class="material-icons" data-id="${team.id}">info</i></a>
                 </li>
                 `
             });
-            contents.innerHTML = '<ul class="collection">' + teams + '</ul>'
+            contents.innerHTML = '<ul class="collection">' + teams + '</ul>';
+            const detil = document.querySelectorAll('.secondary-content');
+            detil.forEach(btn => {
+                btn.onclick = (event) => {
+                    showTeamInfo(event.target.dataset.id);
+                }
+            })
         }).catch(err => {
             console.error(err);
         })
+}
+
+function showTeamInfo(id){
+    let TeamInfo = baseUrl + "teams/" + id;
+    title.innerHTML = "Daftar Pemain" 
+    fetch(TeamInfo, fetchHeader)
+        .then(response => response.json())
+        .then(resJson => {
+            console.log(resJson.squad);
+            let squad = "";
+            resJson.squad.forEach(player => {
+                squad += `
+                <li class="collection-item">
+                    <p> Nama        : ${player.name} <br>
+                        Posisi      : ${player.position}<br>
+                        Role        : ${player.role}<br>
+                        Kebangsaan  : ${player.nationality}<br>
+                    </p>
+                </li>
+                `;
+            })
+            contents.innerHTML =` <ul class="collection"> ${squad} `;
+        })
+    
 }
 
 function getListStandings() {
